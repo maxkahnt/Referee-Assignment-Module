@@ -2,7 +2,7 @@
 defined('_JEXEC') or die('Can only be loaded from within Joomla');
 
 $doc = &JFactory::getDocument();
-$doc->addStyleSheet( '/components/com_refassign/views/refassign/tmpl/default.css' );
+$doc->addStyleSheet( JURI::root().'components/com_refassign/views/refassign/tmpl/default.css' );
 //$doc->addStyleSheet( JPATH_COMPONENT.DS.'views'.DS.'refassign'.DS.'tmpl'.DS.'default.css' );
 
 ?>
