@@ -3,18 +3,42 @@ defined('_JEXEC') or die('Can only be loaded from within Joomla');
 
 jimport('joomla.application.component.controller');
 
+class AssignmentStatus {
+  const Undefined = -1;
+  const NotAvailable = 0;
+  const Acceptable = 1;
+  const Preferred = 2;
+  const Assigned = 3;
+}
+
+class ErrorMsg {
+  const BadAssign = "Ungültige Zuordnung. Das sollte nicht passieren. Bitte wende dich an den Administrator!";
+  const FixedAssign = "Kann Zuordnung nicht ändern, du bist bereits für dieses Spiel vorgesehen. Bitte wende dich an den Ansetzer deines Vereins.";
+  const BadUser = "Du hast keinen Zugriff. Bitte melde dich an. Solltest du bereits angemeldet sein, wende dich an den Administrator!";
+}
+
 class RefAssignController extends JController {
 	function display() {
 		parent::display();	
 	}
 	
-	function listgames() {
+// xml response
+// empty error will cause status to be returned "OK", else it will contain the error message
+function createXMLforGame($gameid, $error, $values) {
+  header("Content-Type: text/xml; charset=utf-8");    
+  $return = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+  $return .= "<game id=\"".$gameid."\">";
+    $return .= "<status>";
+      $return .= ($error == null || $error == "") ? "OK" : $error; //CHECK maybe null == "" ?!
+    $return .= "</status>";
+  $return .= $values;
+  $return .= "</game>";
+  echo $return;
+}
+
+function listgames() {
 		$model = &$this->getModel();
-		header("Content-Type: text/xml; charset=utf-8");    
 		if($model->canSeeTable()) {
-			$return = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-			$return .= "<game><status>OK</status>";
-			
 			$dbo = &JFactory::getDBO();
 			$query = "SELECT id, pref_val FROM `#__refassign_rel` WHERE game_id=".JRequest::getVar("gameid");
 			$dbo->setQuery($query);
@@ -28,14 +52,13 @@ class RefAssignController extends JController {
 				if ($id == JFactory::getUser()->id) {
 					$isYou = "you=\"true\" ";
 				}
-				$return .= "<ref name=\"$usr\" assignmentstatus=\"$lvl\" ".$isYou."/>\n";
+				$refs .= "<ref name=\"$usr\" assignmentstatus=\"$lvl\" ".$isYou."/>\n";
 			}
 			
-			$return .= "</game>";
-			echo $return;
+			createXMLforGame(gameid, "", $refs);
 			return true;
 		} else {
-			echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<game><status>ERROR</status></game>";
+			createXMLforGame(gameid, ErrorMsg::BadUser, "");
 			return false;		
 		}
 	}
@@ -44,26 +67,38 @@ class RefAssignController extends JController {
 		$gameid = JRequest::getVar("gameid");
 		$id = JFactory::getUser()->id;
 
-		header("Content-Type: text/xml; charset=utf-8");    
-		$return = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
-		$return .= "<game id=\"".$gameid."\"><status>OK2</status>";
-		
 		$dbo = &JFactory::getDBO();
 		$query = "SELECT pref_val FROM `#__refassign_rel` WHERE game_id=".$gameid." AND id=".$id;
 		$dbo->setQuery($query);
 		$current_gamestatus = $dbo->loadResult();
-		if ($current_gamestatus == 2) {
-		  $desired_gamestatus = 4;
-		} else if ($current_gamestatus == 4) {
-		  $desired_gamestatus = 0;
-		} else if ($current_gamestatus == 0) {
-		  $desired_gamestatus = 2;
+
+		switch($current_gamestatus) {
+		case AssignmentStatus::Undefined:
+		  $desired_gamestatus = AssignmentStatus::NotAvailable;
+		  break;
+		case AssignmentStatus::NotAvailable:
+		  $desired_gamestatus = AssignmentStatus::Acceptable;
+		  break;
+		case AssignmentStatus::Acceptable:
+		  $desired_gamestatus = AssignmentStatus::Preferred;
+		  break;
+		case AssignmentStatus::Preferred:
+		  $desired_gamestatus = AssignmentStatus::NotAvailable;
+		  break;
+		case AssignmentStatus::Assigned:
+		  createXMLforGame(gameid, ErrorMsg::FixedAssign, "");
+		  return false;
+		  break;
+		default:
+		  createXMLforGame(gameid, ErrorMsg::BadAssign, "");
+		  return false;
+		  break;
 		}
+
 		$query = "UPDATE `#__refassign_rel` SET pref_val=".$desired_gamestatus." WHERE game_id=".$gameid." AND id=".$id;
 		$dbo->execute($query);
 
-		$return .= "</game>";
-		echo $return;
+		createXMLforGame(gameid, "", "");
 		return true;
 	}
 }

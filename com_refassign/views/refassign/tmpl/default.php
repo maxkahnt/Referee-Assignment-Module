@@ -37,6 +37,10 @@ function request(getParam, handleRequest) {
 	var req = createRequest();
 	req.onreadystatechange = function(){
 		if(req.readyState == 4 && req.status == 200) {
+			//TODO remove debug code
+			if(false) {
+			  alert(req.responseText);
+			}
 			handleRequest(req.responseXML);	
 		}
 	}

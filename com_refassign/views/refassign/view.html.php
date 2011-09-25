@@ -6,7 +6,7 @@ jimport('joomla.application.component.view');
 class RefAssignViewRefAssign extends JView {
 	function display($tpl = null) {
 		$model = &$this->getModel();
-		
+
 		if($model->canSeeTable()) {
 			$this->assign('cansee', true);
 			$this->assignRef('gamedata', $model->getTable());

@@ -1,7 +1,8 @@
-td div {
+#gametable td div {
 	display: block;
 	height: 20px;
 	width: 80px;
+	cursor: pointer;
 }
 
 .refstatus2 {
