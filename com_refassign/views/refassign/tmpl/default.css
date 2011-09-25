@@ -13,15 +13,35 @@
 	color: #f00;
 }
 
-.ownstatusundefined,
 .ownstatusloading {
-	background-color: #aaa;
+  color: #333;
+  background-color: #fff;
+}
+.ownstatusloading::after {
+  content: "Loading...";
+}
+
+.ownstatus-1 {
+  background-color: #fff;
+}
+
+.ownstatus0 {
+  background-color: #f00;
+}
+
+.ownstatus1 {
+  background-color: #ff0;
 }
 
 .ownstatus2 {
-	background-color: #f00;
+  background-color: #0f0;
 }
 
-.ownstatus4 {
-	background-color: #0f0;
+
+.ownstatus1000 {
+  color: #333;
+  background-color: #0f0;
+}
+.ownstatus1000::after {
+  content: "Your are the cosen one!";
 }

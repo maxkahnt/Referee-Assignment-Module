@@ -8,11 +8,11 @@ class AssignmentStatus {
   const NotAvailable = 0;
   const Acceptable = 1;
   const Preferred = 2;
-  const Assigned = 3;
+  const Assigned = 1000;
 }
 
 class ErrorMsg {
-  const BadAssign = "Ungültige Zuordnung. Das sollte nicht passieren. Bitte wende dich an den Administrator!";
+  const BadAssign = "Ungültige Zuordnung. Das sollte nicht passieren. Bitte wende dich an den Administrator! Der Eintrag wurde zurückgesetzt.";
   const FixedAssign = "Kann Zuordnung nicht ändern, du bist bereits für dieses Spiel vorgesehen. Bitte wende dich an den Ansetzer deines Vereins.";
   const BadUser = "Du hast keinen Zugriff. Bitte melde dich an. Solltest du bereits angemeldet sein, wende dich an den Administrator!";
 }
@@ -94,7 +94,8 @@ function listgames() {
 		  break;
 		default:
 		  $this->createXMLforGame(gameid, ErrorMsg::BadAssign, "");
-		  return false;
+		  $dbo->execute("UPDATE `#__refassign_rel` SET pref_val=".AssignmentStatus::Undefined." WHERE game_id=".$gameid." AND id=".$id);
+		  return false; // TODO check consequences of returning false here
 		  break;
 		}
 

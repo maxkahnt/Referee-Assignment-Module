@@ -96,10 +96,6 @@ function updateRefs(gameid, refs) {
 	var el = document.getElementById("list_"+gameid);
 	el.innerHTML = ret;	
 
-	// TODO own status
-	if (ownStatus == "-1") {
-		ownStatus = "undefined";
-	}
 	document.getElementById("btns_"+gameid).childNodes[0].className = "ownstatus"+ownStatus;
 
 }
