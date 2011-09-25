@@ -37,13 +37,14 @@ function createXMLforGame($gameid, $error, $values) {
 }
 
 function listgames() {
+		$gameid = JRequest::getVar("gameid");
 		$model = &$this->getModel();
 		if($model->canSeeTable()) {
 			$dbo = &JFactory::getDBO();
-			$query = "SELECT id, pref_val FROM `#__refassign_rel` WHERE game_id=".JRequest::getVar("gameid");
+			$query = "SELECT id, pref_val FROM `#__refassign_rel` WHERE game_id=".$gameid;
 			$dbo->setQuery($query);
 			$results = $dbo->loadAssocList();
-			
+			$refs = "";
 			foreach($results as $entry) {
 				$id = $entry['id'];
 				$lvl = $entry['pref_val'];
@@ -55,10 +56,10 @@ function listgames() {
 				$refs .= "<ref name=\"$usr\" assignmentstatus=\"$lvl\" ".$isYou."/>\n";
 			}
 			
-			createXMLforGame(gameid, "", $refs);
+			$this->createXMLforGame($gameid, "", $refs);
 			return true;
 		} else {
-			createXMLforGame(gameid, ErrorMsg::BadUser, "");
+			$this->createXMLforGame($gameid, ErrorMsg::BadUser, "");
 			return false;		
 		}
 	}
@@ -71,6 +72,8 @@ function listgames() {
 		$query = "SELECT pref_val FROM `#__refassign_rel` WHERE game_id=".$gameid." AND id=".$id;
 		$dbo->setQuery($query);
 		$current_gamestatus = $dbo->loadResult();
+		
+		// TODO assign Undefined if so
 
 		switch($current_gamestatus) {
 		case AssignmentStatus::Undefined:
@@ -86,11 +89,11 @@ function listgames() {
 		  $desired_gamestatus = AssignmentStatus::NotAvailable;
 		  break;
 		case AssignmentStatus::Assigned:
-		  createXMLforGame(gameid, ErrorMsg::FixedAssign, "");
+		  $this->createXMLforGame(gameid, ErrorMsg::FixedAssign, "");
 		  return false;
 		  break;
 		default:
-		  createXMLforGame(gameid, ErrorMsg::BadAssign, "");
+		  $this->createXMLforGame(gameid, ErrorMsg::BadAssign, "");
 		  return false;
 		  break;
 		}
@@ -98,7 +101,7 @@ function listgames() {
 		$query = "UPDATE `#__refassign_rel` SET pref_val=".$desired_gamestatus." WHERE game_id=".$gameid." AND id=".$id;
 		$dbo->execute($query);
 
-		createXMLforGame(gameid, "", "");
+		$this->createXMLforGame($gameid, "", "");
 		return true;
 	}
 }
