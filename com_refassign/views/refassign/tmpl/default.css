@@ -1,0 +1,26 @@
+td div {
+	display: block;
+	height: 20px;
+	width: 80px;
+}
+
+.refstatus2 {
+	color: #00f;
+}
+
+.refstatus4 {
+	color: #f00;
+}
+
+.ownstatusundefined,
+.ownstatusloading {
+	background-color: #aaa;
+}
+
+.ownstatus2 {
+	background-color: #f00;
+}
+
+.ownstatus4 {
+	background-color: #0f0;
+}
