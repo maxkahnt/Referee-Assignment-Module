@@ -131,7 +131,73 @@ function changeOwnState(gameid) {
 	request("&task=cycleownstatus&gameid="+gameid, statusCycleResult );
 }
 
+
+function hasClass(ele,cls) {
+  return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));
+}
+
+function addClass(ele,cls) {
+  if (!this.hasClass(ele,cls)) ele.className += " "+cls;
+}
+
+function removeClass(ele,cls) {
+  if (hasClass(ele,cls)) {
+    var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+    ele.className=ele.className.replace(reg,' ');
+  }
+  // TODO remove double whitespaces
+}
+
+// return the active table_style element
+function table_style_get_active() {
+  // get the table_style element container
+  var list = document.getElementById("table_style").childNodes;
+  for(var i=0; i<list.length; ++i) {
+    // don't care for the non html elements, especially line breaks
+    if (list[i].nodeType == 3) {
+      continue;
+    }
+    // check if this element is active
+    if (hasClass(list[i], "table_style_active")) {
+      return list[i];
+    }
+  }
+}
+
+// set only given element to table_style_active
+function table_style_set_active(element) {
+  // get the table_style element container
+  var list = document.getElementById("table_style").childNodes;
+  for(var i=0; i<list.length; ++i) {
+    // don't care for the non html elements, especially line breaks
+    if (list[i].nodeType == 3) {
+      continue;
+    }
+    // remove the active class
+    removeClass(list[i], "table_style_active");
+  }
+  // add the active class to the given element
+  addClass(element, "table_style_active");
+}
+
+function table_style(style) {
+  var element = document.getElementById("table_style_"+style);
+/* Note: This code block is not needed, "active" will be set correctly with current setting. 
+  if (element == table_style_get_active()) {
+    alert("Error: Already selected.");
+    return false;
+  } // "else" following*/
+  table_style_set_active(element);
+  return true;
+}
+
+
 </script>
+<div id="com_refassign">
+<ul id="table_style">
+<li id="table_style_compact" onClick="table_style('compact')" class="table_style_active">kompakt</li>
+<li id="table_style_complete" onClick="table_style('complete')">komplett</li>
+</ul>
 <table style="font-size:8px" id="gametable">
 	<tr>
   	<th>Spielnr.</th>
@@ -161,6 +227,7 @@ function changeOwnState(gameid) {
 		</tr>  
   <? endforeach; ?>
 </table>
+</div>
 <? else : ?>
 <h2 class="error"><?=$this->msg?></h2>
 <? endif; ?>

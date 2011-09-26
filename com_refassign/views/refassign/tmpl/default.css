@@ -45,3 +45,20 @@
 .ownstatus1000::after {
   content: "Your are the cosen one!";
 }
+
+#table_style {
+  margin: 0; 
+  padding: 0;
+}
+
+#table_style li {
+  text-decoration: underline;
+  list-style: none;
+  display: inline;
+  cursor: pointer;
+}
+
+#table_style .table_style_active {
+  text-decoration: none; 
+  cursor: default;
+}
