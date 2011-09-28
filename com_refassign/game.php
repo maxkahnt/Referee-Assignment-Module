@@ -23,23 +23,23 @@ class Game {
         $this->ref2 = $ref2;
     }
 
-    function toXMLString($identlvl = 0, $identstr = "  ") {
-        $ident = identstr($identstr, $identlvl);
+    function toXMLString($indentlvl = 0, $indentstr = "  ") {
+        $indent = indentstr($indentstr, $indentlvl);
         $return = "";
-        $return .= $ident."<".GAME_TAG_NAME.">\n";
+        $return .= $indent."<".GAME_TAG_NAME.">\n";
 
-        $return .= $ident.$identstr."<number>".$gamenr."</number>\n";
-        $return .= $ident.$identstr."<datetime>".$datetime."</datetime>\n";
-        $return .= $ident.$identstr."<teama>".$team_a."</teama>\n";
-        $return .= $ident.$identstr."<teamb>".$team_b."</teamb>\n";
-        $return .= $ident.$identstr."<league>".$league."</league>\n";
-        $return .= $ident.$identstr."<refone>".$ref1."</refone>\n";
-        $return .= $ident.$identstr."<reftwo>".$ref2."</reftwo>\n";
+        $return .= $indent.$indentstr."<number>".$gamenr."</number>\n";
+        $return .= $indent.$indentstr."<datetime>".$datetime."</datetime>\n";
+        $return .= $indent.$indentstr."<teama>".$team_a."</teama>\n";
+        $return .= $indent.$indentstr."<teamb>".$team_b."</teamb>\n";
+        $return .= $indent.$indentstr."<league>".$league."</league>\n";
+        $return .= $indent.$indentstr."<refone>".$ref1."</refone>\n";
+        $return .= $indent.$indentstr."<reftwo>".$ref2."</reftwo>\n";
 
-        $return .= $ident."</".GAME_TAG_NAME.">\n";
+        $return .= $indent."</".GAME_TAG_NAME.">\n";
     }
 
-    private function identstr($str, $times) {
+    private function indentstr($str, $times) {
         $return = "";
         for($i = 0; $i < $times; ++$i) {
             $return .= $str;
