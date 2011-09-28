@@ -36,6 +36,12 @@ function createXMLforGame($gameid, $error, $values) {
   echo $return;
 }
 
+function updateGameData() {
+  $this->getModel()->updateGameData();
+}
+
+
+
 function listgames() {
 		$gameid = JRequest::getVar("gameid");
 		$model = &$this->getModel();

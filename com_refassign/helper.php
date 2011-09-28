@@ -86,7 +86,7 @@ function get_content() {
 	if($result['status'] == 'ok') {
 		return parse_csv_gamelist($result['content']);
 	} else {
-		return '<p>error<p>';
+		return array();
 	}
 }
 ?>
