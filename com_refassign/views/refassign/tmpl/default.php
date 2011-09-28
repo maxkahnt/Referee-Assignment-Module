@@ -7,6 +7,9 @@ $doc->addStyleSheet( JURI::root().'components/com_refassign/views/refassign/tmpl
 
 ?>
 <? if($this->cansee) : ?>
+<script type="text/javascript" src="jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="default.js"></script>
+
 <script type="text/javascript">
 function createRequest() {
 	var req = null;
